@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct Little_LemonApp: App {
+//    let persistenceController = PersistenceController.shared
+    
     var body: some Scene {
         WindowGroup {
             Onboarding()
