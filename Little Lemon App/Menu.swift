@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Menu: View {
     @Environment(\.managedObjectContext) private var viewContext
-//    @ObservedObject var dish = Dish()
+    @State var searchText = ""
     
     var body: some View {
         VStack {
@@ -17,12 +17,18 @@ struct Menu: View {
             Text("Chicago")
             Text("Some description")
             
+            TextField("Search menu", text: $searchText)
             
-                FetchedObjects { (dishes: [Dish]) in
+            NavigationView {
+                
+                FetchedObjects(predicate: buildPredicates(), sortDescriptors: buildSortDescriptors()) { (dishes: [Dish]) in
                     List {
                         ForEach(dishes, id: \.self) { dish in
                             NavigationLink( destination: {
-                                Details(title: dish.title ?? "", price: dish.price ?? "", image: dish.image ?? "", description: dish.dishDescription ?? "")
+                                Details(title: dish.title ?? "",
+                                        price: dish.price ?? "",
+                                        image: dish.image ?? "",
+                                        description: dish.dishDescription ?? "")
                             }) {
                                 HStack{
                                     Text(dish.title ?? "")
@@ -36,44 +42,46 @@ struct Menu: View {
                         
                     }
                 }
+            }
             
             
-        } .onAppear {
-            getMenuData()
+        } .task {
+            await getMenuData() // .onAppear
         }
     }
-    func getMenuData() {
+    func getMenuData() async {
         PersistenceController.shared.clear()
         
         let urlString = "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json"
-        let url = URL(string: urlString)
+        let url = URL(string: urlString)!
+        let request = URLRequest(url: url)
+        let urlSession = URLSession.shared
+        let decoder = JSONDecoder()
         
-        let request = URLRequest(url: url!)
-        
-        let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let data = data {
-                let decoder = JSONDecoder()
-                
-                do { let menuList = try decoder.decode(MenuList.self, from: data)
-                    for menuItem in menuList.menu {
-                        let dish = Dish(context: viewContext)
-                        dish.title = menuItem.title
-                        dish.price = menuItem.price
-                        dish.image = menuItem.image
-                        dish.dishDescription = menuItem.description
-                    }
-                    try? viewContext.save()
-
-                } catch (let error) {
-                    print(error.localizedDescription)
-                }
+        do {
+            let (data, _) = try await urlSession.data(from: url)
+            let menuList = try decoder.decode(MenuList.self, from: data)
+            for menuItem in menuList.menu {
+                let dish = Dish(context: viewContext)
+                dish.title = menuItem.title
+                dish.price = menuItem.price
+                dish.image = menuItem.image
+                dish.dishDescription = menuItem.description
             }
-            
+            try? viewContext.save()
         }
-        dataTask.resume()
-
         
-        
+        catch { }
+    }
+    
+    func buildSortDescriptors() -> [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "title", ascending: true, selector: #selector(NSString.localizedStandardCompare))]
+    }
+    
+    func buildPredicates() -> NSPredicate {
+        searchText.isEmpty
+        ? NSPredicate(value: true)
+        : NSPredicate(format: "title CONTAINS[cd] %@", searchText)
     }
     
 }

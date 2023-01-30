@@ -21,7 +21,6 @@ struct Details: View {
             AsyncImage(url: URL(string: image))
                 .frame(maxWidth: 300, maxHeight: 300)
 
-                
         }
         
         
