@@ -14,14 +14,47 @@ struct Details: View {
     var description: String
     
     var body: some View {
-        VStack{
-            Text(title)
-            Text(price)
-            Text(description)
-            AsyncImage(url: URL(string: image))
-                .frame(maxWidth: 300, maxHeight: 300)
+        
+            ScrollView{
+                VStack{
+                    HStack {
+                        Text(title)
+                            .font(Font.system(size: 16, weight: .bold))
+                            .padding()
+                            .foregroundColor(Color(red: 73/255, green: 94/255, blue: 87/255))
+                        Text("$\(price)")
+                            .font(Font.system(size: 16, weight: .bold))
+                            .padding()
+                            .foregroundColor(Color(red: 73/255, green: 94/255, blue: 87/255))
+                    }
+                    
+                    Text(description)
+                    AsyncImage(url: URL(string: image))
+                        .frame(maxWidth: 300, maxHeight: 300)
+                    
+                    AsyncImage(url: URL(string: image)) { phase in
+                        switch phase {
+                        case .empty : Image(systemName: "exclamationmark.icloud")
+                                .foregroundColor(Color(red: 73/255, green: 94/255, blue: 87/255))
+                                
+                        case .success(let image):
+                            image.resizable()
+                                .scaledToFit()
+                            
+                        case .failure(_):
+                            Image(systemName: "exclamationmark.icloud")
+                                .foregroundColor(Color(red: 73/255, green: 94/255, blue: 87/255))
+                        @unknown default:
+                            Image(systemName: "exclamationmark.icloud")
+                                .foregroundColor(Color(red: 73/255, green: 94/255, blue: 87/255))
+                        }
+                        
+                    }
+                    .frame(width: 200, height: 200)
+                }
+            }
 
-        }
+        
         
         
 

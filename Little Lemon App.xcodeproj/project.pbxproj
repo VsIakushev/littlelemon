@@ -71,8 +71,8 @@
 			children = (
 				5798FA5B29870EE90093AF80 /* Little_Lemon_AppApp.swift */,
 				5798FA6929870F200093AF80 /* Onboarding.swift */,
-				5798FA6B29870F3B0093AF80 /* UserProfile.swift */,
 				5798FA6D29870F530093AF80 /* Home.swift */,
+				5798FA6B29870F3B0093AF80 /* UserProfile.swift */,
 				5798FA6F29870F600093AF80 /* Menu.swift */,
 				5774E6D7298801900016378B /* Details.swift */,
 				5798FA762987C93C0093AF80 /* Network */,

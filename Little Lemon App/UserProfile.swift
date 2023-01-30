@@ -20,6 +20,7 @@ struct UserProfile: View {
     
     var body: some View {
         VStack {
+            // Header
             HStack {
                 Button {
                     // Menu()
@@ -42,6 +43,7 @@ struct UserProfile: View {
             VStack(alignment: .leading) {
                 ScrollView{
                     VStack(alignment: .leading) {
+                        // Personal Info
                         Group {
                             
                             Text("Personal Information")
@@ -65,7 +67,6 @@ struct UserProfile: View {
                                     // "Change Info" code here
                                 }
                                 .font(Font.system(size: 16, weight: .medium))
-                                
                                 .padding([.leading, .trailing])
                                 .padding([.top, .bottom], 10)
                                 .foregroundColor(Color(red: 237/255, green: 239/255, blue: 238/255))
