@@ -8,10 +8,12 @@
 import SwiftUI
 
 @main
-struct Little_Lemon_AppApp: App {
+struct Little_LemonApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Onboarding()
+                .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
+                // For closing keyboard by Tap outside of textfield
         }
     }
 }
